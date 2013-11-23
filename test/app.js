@@ -3,8 +3,8 @@ var fs = require('fs'),
   http = require('http');
 
 
-var privateKey = fs.readFileSync('test/site.key').toString();
-var certificate = fs.readFileSync('test/final.crt').toString();
+var privateKey = fs.readFileSync('site.key').toString();
+var certificate = fs.readFileSync('final.crt').toString();
 
 var options = {
      key: privateKey,
