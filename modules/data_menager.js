@@ -1,4 +1,6 @@
-var varibleDao = require('./variable_dao'); 
+var varibleDao = require('./variable_dao');
+var fileMapDao = require('./fileMap_dao');
+
 
 exports.varibles = {
 
@@ -17,4 +19,7 @@ exports.varibles = {
 
 exports.pages = {
 	
+	upsert: function( map, file, callback ) {
+		fileMapDao.upsert( map, file, callback );
+	}
 }

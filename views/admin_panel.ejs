@@ -13,6 +13,25 @@
  				$( "#tabs" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
 				$( "#tabs li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
 			});
+
+			var host = window.location.host;
+
+			function sendFileUpdate( file ) {
+
+				$.ajax( { 
+					type: 'POST',
+					url: 'http://' + host + "/fileUpdate",
+					data: { map: 'test map', fileName: file }
+				})
+					.done(function( res ) {
+						console.log( res );
+				})
+					.fail(function() {
+						console.log("error");
+				})
+					.always(function() {
+				});
+			}
 		</script>
 	</head>
 	<body>
@@ -27,21 +46,17 @@
 						<tr>
 							<th>Map</th>
 							<th>File</th>
+							<th>Action</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td><input type="text"/></td>
-							<td>File name 1...</td>
-						</tr>
-						<tr>
-							<td><input type="text"/></td>
-							<td>File name 2...</td>
-						</tr>
-						<tr>
-							<td><input type="text"/></td>
-							<td>File name 3...</td>
-						</tr>
+						<% for( var i = 0; i < files.length; i++){ %>
+							<tr>
+								<td><input type="text"/></td>
+								<td><%= files[i] %></td>
+								<td><input type="button" value="update" onclick="sendFileUpdate('<%= files[i] %>');"/></td>
+							</tr>
+						<% };%>
 					</tbosy>
 				</table>
 			</div>
