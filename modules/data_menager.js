@@ -21,5 +21,9 @@ exports.pages = {
 	
 	upsert: function( map, file, callback ) {
 		fileMapDao.upsert( map, file, callback );
+	},
+
+	select: function( query, fields, callback ) {
+		fileMapDao.select( query, fields, callback );
 	}
 }

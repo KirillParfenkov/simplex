@@ -7,9 +7,9 @@ var pages = 'pages';
 
 exports.upsert = function ( map, file, callback ) {
 
-	db.open( function(err, db) {
+	db.open( function( err, db ) {
 		if ( !err ) {
-			db.createCollection( pages, function( err, collection) {
+			db.createCollection( pages, function( err, collection ) {
 				if ( !err ) {
 					collection.update({ path: file },
 									  { map: map,
@@ -17,6 +17,26 @@ exports.upsert = function ( map, file, callback ) {
 									  { upsert: true },
 									  callback);
 					db.close();
+				}
+			});
+		} else {
+			callback( err );
+			db.close();
+		}
+	});
+}
+
+exports.select = function ( query, fields, callback ) {
+
+	db.open( function( err, db ) {
+		if ( !err ) {
+			db.createCollection( pages, function( err, collection ) {
+				if ( !err ) {
+					collection.find( query, fields, function( err, documents ) {
+						callback( err, documents );
+						//console.log( 'connection closed!' );
+						//db.close();
+					});
 				}
 			});
 		} else {
