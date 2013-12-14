@@ -11,10 +11,14 @@ exports.mapRouts = function( app ) {
 
 		dataMenager.pages.select( {}, { map: true, path: true }, function( err, documents ) {
 
+			console.log( 'Doces size: ' + documents.length );
+
 			documents.each( function( err, doc ) {
 				if ( !err ) {
 					docs.push( doc );
-					console.log( 'Doc: ' + doc );
+					if ( doc ) {
+						console.log( 'Doc: ' + doc.map + '  ---> ' + doc.path );
+					}
 				} else {
 					console.log( 'Error: ' + err );
 				}

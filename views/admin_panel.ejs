@@ -16,12 +16,12 @@
 
 			var host = window.location.host;
 
-			function sendFileUpdate( file ) {
+			function sendFileUpdate( file, updatedField ) {
 
 				$.ajax( { 
 					type: 'POST',
 					url: 'http://' + host + "/fileUpdate",
-					data: { map: 'test map', fileName: file }
+					data: { map: updatedField.value , fileName: file }
 				})
 					.done(function( res ) {
 						console.log( res );
@@ -51,10 +51,11 @@
 					</thead>
 					<tbody>
 						<% for( var i = 0; i < files.length; i++){ %>
-							<tr>
-								<td><input type="text"/></td>
+							<tr class="page-row">
+								<td><input class="map-field" type="text"/></td>
 								<td><%= files[i] %></td>
-								<td><input type="button" value="update" onclick="sendFileUpdate('<%= files[i] %>');"/></td>
+								<td><input type="button" value="update" 
+								           onclick="sendFileUpdate( '<%= files[i] %>', $( this ).parents( '.page-row' ).find( '.map-field' )[0] );"/> </td>
 							</tr>
 						<% };%>
 					</tbosy>
