@@ -52,7 +52,7 @@
 					<tbody>
 						<% for( var i = 0; i < files.length; i++){ %>
 							<tr class="page-row">
-								<td><input class="map-field" type="text"/></td>
+								<td><input class="map-field" type="text" value="<%=  fileMap[files[i]] %>"/></td>
 								<td><%= files[i] %></td>
 								<td><input type="button" value="update" 
 								           onclick="sendFileUpdate( '<%= files[i] %>', $( this ).parents( '.page-row' ).find( '.map-field' )[0] );"/> </td>
