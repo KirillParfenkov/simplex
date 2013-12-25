@@ -34,8 +34,7 @@ exports.select = function ( query, fields, callback ) {
 				if ( !err ) {
 					collection.find( query, fields).toArray( function( err, documents ) {
 						callback( err, documents );
-						//console.log( 'connection closed!' );
-						//db.close();
+						db.close();
 					});
 				}
 			});

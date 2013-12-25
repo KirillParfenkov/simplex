@@ -32,6 +32,8 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/users', user.list);
 
+
+map.update( app );
 map.mapRouts( app );
 
 var routeManager = require('./modules/route_manager').createRouteManager( app );
