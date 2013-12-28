@@ -69,6 +69,19 @@ exports.mapRouts = function( app ) {
 		});
 	});
 
+	app.get( '/selectAllPages', function( req, res ) {
+
+		dataMenager.pages.select({}, {map: true, path: true}, function( err, documents ) {
+
+			if ( !err ) {
+				res.send( documents );
+			} else {
+				console.log( err );
+				res.send( 'Error!' );
+			}
+		});
+	});
+
 
 
 }

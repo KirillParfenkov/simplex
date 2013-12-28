@@ -32,7 +32,7 @@ exports.select = function ( query, fields, callback ) {
 		if ( !err ) {
 			db.createCollection( pages, function( err, collection ) {
 				if ( !err ) {
-					collection.find( query, fields).toArray( function( err, documents ) {
+					collection.find( query, fields ).toArray( function( err, documents ) {
 						callback( err, documents );
 						db.close();
 					});

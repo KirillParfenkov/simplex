@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title><%= title %></title>
+		<meta charset="utf-8"/>
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+		<script src="queries.js"></script>
+	</head>
+	<style>
+
+		#header {
+			margin: 20px;
+		}
+
+		#sidebar {
+
+			position: absolute;
+			top: 80px;
+			width: 200px;
+			z-index: 100;
+
+		}
+
+		#sidebar a {
+			color: black;
+		}
+
+		.view {
+			position: absolute;
+			width: 100%;
+			left: -100%;
+			height: 100px;
+			z-index: 1;
+		}
+
+		.content {
+			padding-left: 200px;
+		}
+
+		.invisible {
+			display: none;
+		}
+
+		#pageTable {
+			width: 600px;
+		}
+
+	</style>
+	<script>
+
+		var currentPage;
+
+		function showPage ( page ) {
+
+			var time = 300;
+
+			if ( currentPage != page ) {
+
+				if ( currentPage ) {
+					jQuery( currentPage ).animate(
+						{
+							left: "-100%"
+						}, time, function() {
+							jQuery( page ).animate( { left: 0 }, time );
+						}
+					);
+				} else {
+					jQuery( page ).animate( { left: 0 }, time );
+				}
+
+				currentPage = page;
+			}
+		}
+
+		function hideObject( object ) {
+			$( object ).addClass( 'invisible' );
+		}
+
+		function showObject( object ) {
+			$( object ).removeClass( 'invisible' );
+		}
+
+		$( document ).ready( function() {
+
+			selectAllPages( function( documents ) {
+
+				var tableBody = $( '#pageTable' ).find( 'tbody' );
+				for ( var i = 0; documents.length; i++ ) {
+					tableBody.append('<tr><td>' + '---' +'</td>' +
+						                  '<td>' + '---' + '</td>' +
+						                  '<td>' + documents[i].map + '</td>' +
+						                  '<td>' + documents[i].path + '</td></tr>'
+						);
+				}
+
+				console.log( '--Docs->' + documents );
+			});
+
+		});
+
+	</script>
+
+	<body>
+		<div id="header"><h2>Administration page</h2></div>
+
+		<div id="sidebar">
+			<ul>
+				<li><a href="#" onclick="showPage('#managePages');">Manage pages</a></li>
+				<li><a href="#" onclick="showPage('#globalVariables');">Global Variables</a></li>
+			</ul>
+		</div>
+
+		<div id="managePages" class="view">
+			<div class="content">
+				Manage Pages
+				<form>
+					<table id="pageTable">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Name</th>
+								<th>Place</th>
+								<th>Path</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tfoot>
+							<tr id="showNewPageRow">
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td><button onclick="hideObject('#showNewPageRow'); showObject('#newPageRow');">New Page</button></td>
+							</tr>
+							<tr id="newPageRow" class="invisible">
+								<td></td>
+								<td><input type="text" placeholder="Name"/></td>
+								<td><input type="text" placeholder="Place"/></td>
+								<td><input type="file" placeholder="Path"/></td>
+								<td><input type="button" value="Save" onclick="hideObject('#newPageRow'); showObject('#showNewPageRow');" /></td>
+							</tr>
+						</tfoot>
+						<tbody>
+						</tbody>
+					</table>
+				</form>
+			</div>
+		</div>
+
+		<div id="globalVariables" class="view">
+			<div class="content">
+				Global Variables
+			</div>
+		</div>
+
+	</body>
+</html>
