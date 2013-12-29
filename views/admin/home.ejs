@@ -111,6 +111,14 @@
 
 			hideObject( '#newPageRow' ); 
 			showObject( '#showNewPageRow' );
+			event.preventDefault();
+		}
+
+		function showNewPageRow() {
+
+			hideObject('#showNewPageRow');
+			showObject('#newPageRow');
+			event.preventDefault();
 		}
 
 	</script>
@@ -145,14 +153,14 @@
 								<td></td>
 								<td></td>
 								<td></td>
-								<td><button onclick="hideObject('#showNewPageRow'); showObject('#newPageRow');">New Page</button></td>
+								<td><button onclick="showNewPageRow( event );">New Page</button></td>
 							</tr>
 							<tr id="newPageRow" class="invisible">
 								<td></td>
 								<td><input name="page-name" type="text" placeholder="Name"/></td>
 								<td><input name="page-place" type="text" placeholder="Place"/></td>
-								<td><input name="file-name" type="file" placeholder="Path"/></td>
-								<td><input type="button" value="Save" onclick="saveFilePlace();"/></td>
+								<td><input name="file-name" type="text" placeholder="Path"/></td>
+								<td><input type="button" value="Save" onclick="saveFilePlace( event );"/></td>
 							</tr>
 						</tfoot>
 						<tbody>

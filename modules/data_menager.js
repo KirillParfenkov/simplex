@@ -19,8 +19,8 @@ exports.varibles = {
 
 exports.pages = {
 	
-	upsert: function( map, file, callback ) {
-		fileMapDao.upsert( map, file, callback );
+	upsert: function( name, place, file, callback ) {
+		fileMapDao.upsert( name, place, file, callback );
 	},
 
 	select: function( query, fields, callback ) {

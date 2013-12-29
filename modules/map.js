@@ -7,7 +7,7 @@ var publishFiles;
 var publishFileMap;
 
 exports.update = function( app ) {
-
+/*
 	async.parallel({
 
 		fileMap: function getFileMaps( callback ) {
@@ -47,14 +47,25 @@ exports.update = function( app ) {
 			});
 		});
 	});
+*/
 
+
+	dataMenager.pages.select( {}, { name: true, place: true, path: true }, function( err, documents ) {
+
+
+		documents.forEach( function( doc ) {
+			app.get( '/' + doc.place, function( req, res ) {
+				res.render( doc.path, { title: doc.name } );
+			});
+		});
+	});
 
 }
 
 exports.mapRouts = function( app ) {
 
 	app.get('/admin_panel', function( req, res ) {
-		res.render('admin/admin_panel', { title: 'Admin panel', files: publishFiles, fileMap: publishFileMap });
+		res.render('admin/home', { title: 'Admin panel'});
 	});
 
 	app.post( '/fileUpdate', function( req, res ) {
@@ -71,7 +82,7 @@ exports.mapRouts = function( app ) {
 
 	app.get( '/selectAllPages', function( req, res ) {
 
-		dataMenager.pages.select({}, {map: true, path: true}, function( err, documents ) {
+		dataMenager.pages.select({}, {name: true, place: true, path: true}, function( err, documents ) {
 
 			if ( !err ) {
 				res.send( documents );
@@ -82,6 +93,16 @@ exports.mapRouts = function( app ) {
 		});
 	});
 
-
+	app.post( '/insertNewFilePlace', function( req, res ) {
+		dataMenager.pages.upsert( req.body.pageName, req.body.pagePlace, req.body.fileName, function( err, file ){
+			if ( !err ) {
+				res.send( req.body.fileName );
+				console.log( 'Inserted ' + req.body.fileName + '\n');
+			} else {
+				res.send( 'Error!' );
+				console.log( err );
+			}
+		});
+	});
 
 }
