@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title><%= title %></title>
+		<meta charset="utf-8"/>
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
+		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+		<script src="../../queries.js"></script>
+
+	</head>
+	<style>
+
+		.invisible {
+			display: none;
+		}
+
+	</style>
+	<script type="text/javascript">
+
+		$( document ).ready( function() {
+
+			selectViewByName( '<%= viewName %>', checkExistence );
+
+		});
+
+		function checkExistence( view ) {
+			console.log( 'Check View!' );
+			if ( view ) {
+				redrowVariableTable( view );
+			} else {
+				console.log( 'Error! View not exist!' );
+			}
+		}
+
+		function saveVariable() {
+
+			var variableName = $('#saveVariableButtonRow').find( 'input[name="variable-name"]' )[0].value;
+			var variableType = $( '#saveVariableButtonRow' ).find( 'input[name="variable-type"]' )[0].value;
+
+			sendNewVariable( '<%= viewName %>', variableName, variableName, function( res ) {
+				console.log( res );
+			});
+
+			hideObject( '#saveVariableButtonRow' );
+			showObject( '#newVariableButtonRow' );
+			event.preventDefault();			
+		}
+
+		function hideObject( object ) {
+			$( object ).addClass( 'invisible' );
+		}
+
+		function showObject( object ) {
+			$( object ).removeClass( 'invisible' );
+		}
+
+		function showNewRow( showRow, hideRow ) {
+
+			hideObject( hideRow );
+			showObject( showRow );
+			event.preventDefault();
+		}
+
+		function redrowVariableTable( view ) {
+			/*
+			var tableBody = $( '#variableTable' ).find( 'tbody' );
+			tableBody.empty();
+			for ( var i = 0; i < documents.length; i++ ) {
+				tableBody.append( '<tr><td>' + documents[i].name + '</td>' +
+				                  '<td>' + documents[i].type + '</td>' +
+				                  '<td>' + '</td></tr>');
+			}*/
+		}
+
+	</script>
+
+	<body>
+		<h2>Name: <%= viewName %></h2>
+		<table id="variableTable">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Type</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tfoot>
+				<tr id="newVariableButtonRow">
+					<td></td>
+					<td></td>
+					<td><button onclick="showNewRow( '#saveVariableButtonRow', '#newVariableButtonRow' );">New Variable</button></td>
+				</tr>
+				<tr id="saveVariableButtonRow" class="invisible">
+					<td><input name="variable-name" type="text" placeholder="Name"/></td>
+					<td><input name="variable-type" type="text" placeholder="Type"/></td>
+					<td><input type="button" value="Save" onclick="saveVariable();"/></td>
+				</tr>
+			</tfoot>
+			<tbody>
+			</tbody>
+		</table>
+	</body>
+</html>

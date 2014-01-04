@@ -36,10 +36,6 @@ exports.delete = function ( list ) {
 
 }
 
-exports.upsert = function ( list ) {
-
-}
-
 exports.insert = function ( list ) {
 
 }
@@ -58,6 +54,45 @@ exports.selectAll = function ( callback ) {
 					db.close();
 				}
 			});
+		}
+	});
+}
+
+exports.upsert = function ( viewName, name, type, callback ) {
+
+	db.open( function( err, db ) {
+		if ( !err ) {
+			db.createCollection( variables, function( err, collection ) {
+				if ( !err ) {
+					collection.update({ name: name, viewName: viewName },
+									  { viewName: viewName, name: name, type: type },
+									  { upsert: true },
+									  callback);
+					db.close();
+				}
+			});
+		} else {
+			callback( err );
+			db.close();
+		}
+	});
+}
+
+exports.select = function ( query, fields, callback ) {
+
+	db.open( function( err, db ) {
+		if ( !err ) {
+			db.createCollection( variables, function( err, collection ) {
+				if ( !err ) {
+					collection.find( query, fields ).toArray( function( err, documents ) {
+						callback( err, documents );
+						db.close();
+					});
+				}
+			});
+		} else {
+			callback( err );
+			db.close();
 		}
 	});
 }

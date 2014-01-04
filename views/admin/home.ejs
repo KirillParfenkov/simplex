@@ -8,6 +8,7 @@
 		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 		<script src="queries.js"></script>
+
 	</head>
 	<style>
 
@@ -53,6 +54,37 @@
 
 		var currentPage;
 
+		$( document ).ready( function() {
+
+/*			selectAllPages( function( documents ) {
+
+				var tableBody = $( '#pageTable' ).find( 'tbody' );
+				for ( var i = 0; i < documents.length; i++ ) {
+					tableBody.append('<tr><td>' + '---' +'</td>' +
+					                  '<td>' + documents[i].name + '</td>' +
+					                  '<td>' + documents[i].place + '</td>' +
+					                  '<td>' + documents[i].path + '</td></tr>'
+					);
+				}
+			});*/
+
+
+			selectAllViews( redrowViewTable );
+
+		});
+
+		function redrowViewTable( documents ) {
+
+			var tableBody = $( '#viewTable' ).find( 'tbody' );
+			tableBody.empty();
+			for ( var i = 0; i < documents.length; i++ ) {
+				tableBody.append( '<tr><td>' + documents[i].name + '</td>' +
+				                  '<td>' + documents[i].path + '</td>' + 
+				                  '<td><a href="admin_panel/view/' + documents[i].name + '"">Edit</a></td></tr>'
+				);
+			}
+		}
+
 		function showPage ( page ) {
 
 			var time = 300;
@@ -83,22 +115,6 @@
 			$( object ).removeClass( 'invisible' );
 		}
 
-		$( document ).ready( function() {
-
-			selectAllPages( function( documents ) {
-
-				var tableBody = $( '#pageTable' ).find( 'tbody' );
-				for ( var i = 0; i < documents.length; i++ ) {
-					tableBody.append('<tr><td>' + '---' +'</td>' +
-					                  '<td>' + documents[i].name + '</td>' +
-					                  '<td>' + documents[i].place + '</td>' +
-					                  '<td>' + documents[i].path + '</td></tr>'
-					);
-				}
-			});
-
-		});
-
 		function saveFilePlace() {
 
 			var pageName = $('#newPageRow').find( 'input[name="page-name"]' )[0].value;
@@ -114,10 +130,25 @@
 			event.preventDefault();
 		}
 
-		function showNewPageRow() {
+		function saveView() {
 
-			hideObject('#showNewPageRow');
-			showObject('#newPageRow');
+			var viewName = $( '#newViewRow' ).find( 'input[name="view-name"]' )[0].value;
+			var fileName = $( '#newViewRow' ).find( 'input[name="file-name"]' )[0].value;
+
+			sendNewView( viewName, fileName, function( res ) {
+				selectAllViews( redrowViewTable );
+				console.log( res );
+			});
+
+			hideObject( '#newViewRow' ); 
+			showObject( '#showNewViewRow' );
+			event.preventDefault();
+		}
+
+		function showNewRow( showRow, hideRow ) {
+
+			hideObject( hideRow ); 
+			showObject( showRow );
 			event.preventDefault();
 		}
 
@@ -128,7 +159,8 @@
 
 		<div id="sidebar">
 			<ul>
-				<li><a href="#" onclick="showPage('#managePages');">Manage pages</a></li>
+				<li><a href="#" onclick="showPage('#managePages');">Manage Pages</a></li>
+				<li><a href="#" onclick="showPage('#manageViews');">Manage Views</a></li>
 				<li><a href="#" onclick="showPage('#globalVariables');">Global Variables</a></li>
 			</ul>
 		</div>
@@ -153,14 +185,14 @@
 								<td></td>
 								<td></td>
 								<td></td>
-								<td><button onclick="showNewPageRow( event );">New Page</button></td>
+								<td><button onclick="showNewRow( '#newPageRow', '#showNewPageRow' );">New Page</button></td>
 							</tr>
 							<tr id="newPageRow" class="invisible">
 								<td></td>
 								<td><input name="page-name" type="text" placeholder="Name"/></td>
 								<td><input name="page-place" type="text" placeholder="Place"/></td>
 								<td><input name="file-name" type="text" placeholder="Path"/></td>
-								<td><input type="button" value="Save" onclick="saveFilePlace( event );"/></td>
+								<td><input type="button" value="Save" onclick="saveFilePlace();"/></td>
 							</tr>
 						</tfoot>
 						<tbody>
@@ -176,5 +208,35 @@
 			</div>
 		</div>
 
+		<div id="manageViews" class="view">
+			<div class="content">
+				Manage Views
+				<form>
+					<table id="viewTable">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Path</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tfoot>
+							<tr id="showNewViewRow">
+								<td></td>
+								<td></td>
+								<td><button onclick="showNewRow( '#newViewRow', '#showNewViewRow' );">New Page</button></td>
+							</tr>
+							<tr id="newViewRow" class="invisible">
+								<td><input name="view-name" type="text" placeholder="Name"/></td>
+								<td><input name="file-name" type="text" placeholder="Path"/></td>
+								<td><input type="button" value="Save" onclick="saveView();"/></td>
+							</tr>
+						</tfoot>
+						<tbody>
+						</tbody>
+					</table>
+				</form>
+			</div>
+		</div>
 	</body>
 </html>
