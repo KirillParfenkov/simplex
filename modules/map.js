@@ -7,48 +7,6 @@ var publishFiles;
 var publishFileMap;
 
 exports.update = function( app ) {
-/*
-	async.parallel({
-
-		fileMap: function getFileMaps( callback ) {
-			dataMenager.pages.select( {}, { map: true, path: true }, function( err, documents ) {
-
-				var map = {};
-				for ( var i = 0; i < documents.length; i++ ) {
-					map[documents[i].path] = documents[i].map;
-				}
-
-				callback( err, map );
-			});
-		},
-
-		files: function getFilePaths( callback ) {
-			fs.readdir('views', function( err, files ) {
-				var stat;
-				var filesForView = new Array ();
-				for ( var i = 0; i < files.length; i++ ) {
-					stat = fs.statSync( 'views/' + files[i] );
-					if ( stat.isFile() ) {
-						filesForView.push( files[i] );
-					}
-				}
-				callback( err, filesForView );
-			});
-		}
-	}, function renderView( err, result ) {
-
-		if ( err ) throw err;
-		publishFiles = result.files;
-		publishFileMap = result.fileMap;
-
-		publishFiles.forEach( function( file ) {
-			app.get( '/' +  publishFileMap[file], function( req, res ) {
-				res.render( file, { title: file } );
-			});
-		});
-	});
-*/
-
 
 	dataMenager.pages.select( {}, { name: true, place: true, path: true }, function( err, documents ) {
 
@@ -65,7 +23,9 @@ exports.update = function( app ) {
 exports.mapRouts = function( app ) {
 
 	app.post('/insertNewVariable', function( req, res ) {
-		dataMenager.variable.upsert( req.body.viewName, req.body.name, req.body.type, function( err, name, type ) {
+		dataMenager.variables.upsert( req.body.viewName, 
+			                        { name: req.body.variableName, type: req.body.variableType },
+		                              function( err, name, type ) {
 			if ( !err ) {
 				res.send( req.body.name );
 				console.log( 'Upserted Variable: ' + req.body.name + '\n' );
@@ -77,7 +37,36 @@ exports.mapRouts = function( app ) {
 	});
 
 	app.get('/admin_panel/view/:name', function( req, res ) {
-		res.render( 'admin/viewEdit', { title: 'View Page', viewName: req.params.name } );
+
+		async.parallel( {
+			view: function getView( callback ) {
+				dataMenager.views.select({ name: req.params.name }, { name: true, variables: true }, function( err, documents ) {
+
+					if ( !err ) {
+						if ( documents ) {
+							callback( err, documents[0]);
+						}
+					} else {
+						callback( err );
+					}
+				});
+			},
+
+			variableTypes: function getVariableTypes( callback ) {
+				dataMenager.variables.getTyles( function( err, types ) {
+
+					callback( err, types );
+				});
+			}
+		}, function render( err, result ) {
+			if ( err ) throw err;
+
+			if ( result.view ) {
+				res.render( 'admin/viewEdit', { title: 'View Page', view: result.view, variableTypes: result.variableTypes } );
+			} else {
+				res.send( 'Error!' );
+			}
+		});
 	});
 
 	app.get('/admin_panel', function( req, res ) {
@@ -111,7 +100,7 @@ exports.mapRouts = function( app ) {
 
 	app.get( '/selectView/:name', function( req, res ) {
 		dataMenager.views.select({ name: req.params.name }, {name: true}, function( err, documents ) {
-			console.log( 'req.body.name-->' + req.params.name);
+
 			if ( !err ) {
 				console.log( documents );
 				res.send( documents[0] );
@@ -137,10 +126,13 @@ exports.mapRouts = function( app ) {
 
 	app.get( '/selectAllVariablesForView/:viewName', function( req, res ) {
 
-		dataMenager.views.select({ view: req.params.viewName }, {view: true, name: true, path: true}, function( err, documents ) {
-
+		dataMenager.views.select({ name: req.params.viewName }, 
+			                     { variables: true}, 
+			                       function( err, documents ) {
 			if ( !err ) {
-				res.send( documents );
+				if ( documents[0] ) {
+					res.send( documents[0].variables);
+				}
 			} else {
 				console.log( err );
 				res.send( 'Error!' );

@@ -21,14 +21,14 @@
 
 		$( document ).ready( function() {
 
-			selectViewByName( '<%= viewName %>', checkExistence );
+			selectViewByName( '<%= view.name %>', checkExistence );
 
 		});
 
 		function checkExistence( view ) {
-			console.log( 'Check View!' );
+
 			if ( view ) {
-				redrowVariableTable( view );
+				selectVariablesForView( '<%= view.name %>', redrowVariableTable );
 			} else {
 				console.log( 'Error! View not exist!' );
 			}
@@ -37,10 +37,10 @@
 		function saveVariable() {
 
 			var variableName = $('#saveVariableButtonRow').find( 'input[name="variable-name"]' )[0].value;
-			var variableType = $( '#saveVariableButtonRow' ).find( 'input[name="variable-type"]' )[0].value;
+			var variableType = $( '#saveVariableButtonRow' ).find( '[name="variable-type"]' )[0].value;
 
-			sendNewVariable( '<%= viewName %>', variableName, variableName, function( res ) {
-				console.log( res );
+			sendNewVariable( '<%= view.name %>', variableName, variableType, function( res ) {
+				selectViewByName( '<%= view.name %>', checkExistence );
 			});
 
 			hideObject( '#saveVariableButtonRow' );
@@ -63,21 +63,21 @@
 			event.preventDefault();
 		}
 
-		function redrowVariableTable( view ) {
-			/*
+		function redrowVariableTable( variables ) {
+
 			var tableBody = $( '#variableTable' ).find( 'tbody' );
 			tableBody.empty();
-			for ( var i = 0; i < documents.length; i++ ) {
-				tableBody.append( '<tr><td>' + documents[i].name + '</td>' +
-				                  '<td>' + documents[i].type + '</td>' +
+			for ( var i = 0; i < variables.length; i++ ) {
+				tableBody.append( '<tr><td>' + variables[i].name + '</td>' +
+				                  '<td>' + variables[i].type + '</td>' +
 				                  '<td>' + '</td></tr>');
-			}*/
+			}
 		}
 
 	</script>
 
 	<body>
-		<h2>Name: <%= viewName %></h2>
+		<h2>Name: <%= view.name %></h2>
 		<table id="variableTable">
 			<thead>
 				<tr>
@@ -94,7 +94,13 @@
 				</tr>
 				<tr id="saveVariableButtonRow" class="invisible">
 					<td><input name="variable-name" type="text" placeholder="Name"/></td>
-					<td><input name="variable-type" type="text" placeholder="Type"/></td>
+					<td>
+						<select name="variable-type">
+							<% for( var i = 0; i < variableTypes.length; i++ ) { %>
+								<option value="<%= variableTypes[i].name %>"><%= variableTypes[i].name %></option>
+							<% } %>
+						</select>
+					</td>
 					<td><input type="button" value="Save" onclick="saveVariable();"/></td>
 				</tr>
 			</tfoot>

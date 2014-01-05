@@ -38,13 +38,21 @@ exports.views = {
 	}
 }
 
-exports.variable = {
+exports.variables = {
 
-	upsert: function( viewName, name, type, callback ) {
-		varibleDao.upsert( viewName, name, type, callback ); 
+	upsert: function( viewName, variable, callback ) {
+		varibleDao.pushVariable( viewName, variable, callback ); 
+	},
+
+	remove: function( viewName, matchVar, callback ) {
+		varibleDao.pullVariable( viewName, matchVar, callback );
 	},
 
 	select: function( query, fields, callback ) {
 		varibleDao.select( query, fields, callback );
-	}	
+	},
+
+	getTyles: function( callback ) {
+		varibleDao.getTyles( callback );
+	}
 }

@@ -24,7 +24,7 @@ function sendNewView( name, file, callback ) {
 		    callback, "text");
 }
 
-function sendNewVariable( viewName ,name, type, callback ) {
+function sendNewVariable( viewName, name, type, callback ) {
 	$.post( 'http://' + host + "/insertNewVariable", 
 		    { viewName: viewName, variableName: name, variableType: type },
 		    callback, "text");
@@ -32,4 +32,8 @@ function sendNewVariable( viewName ,name, type, callback ) {
 
 function selectViewByName( viewName, callback ) {
 	$.get( 'http://' + host + "/selectView/" + viewName, callback );
+}
+
+function selectVariablesForView( viewName, callback) {
+	$.get( 'http://' + host + "/selectAllVariablesForView/" + viewName, callback );
 }
