@@ -12,9 +12,9 @@ function selectAllViews( callback ) {
 
 }
 
-function sendNewFilePlace( name, place, file, callback ) {
-	$.post( 'http://' + host + "/insertNewFilePlace", 
-		    { pageName: name, pagePlace: place, fileName: file },
+function sendNewPage( name, place, view, callback ) {
+	$.post( 'http://' + host + "/insertNewPage", 
+		    { pageName: name, pagePlace: place, pageView: view },
 		    callback, "text");
 }
 

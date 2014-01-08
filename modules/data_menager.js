@@ -1,5 +1,6 @@
 var varibleDao = require('./variable_dao');
 var fileMapDao = require('./fileMap_dao');
+var pageDao = require('./page_dao');
 
 exports.varibles = {
 
@@ -18,12 +19,16 @@ exports.varibles = {
 
 exports.pages = {
 	
-	upsert: function( name, place, file, callback ) {
-		fileMapDao.upsert( name, place, file, callback );
+	upsert: function( name, place, view, callback ) {
+		pageDao.upsert( name, place, view, callback );
 	},
 
 	select: function( query, fields, callback ) {
-		fileMapDao.select( query, fields, callback );
+		pageDao.select( query, fields, callback );
+	},
+
+	selectById: function( id, fields, callback) {
+		pageDao.selectById( id, fields, callback );
 	}
 }
 

@@ -22,7 +22,7 @@ exports.update = function( app ) {
 
 exports.mapRouts = function( app ) {
 
-	app.post('/insertNewVariable', function( req, res ) {
+	app.post( '/insertNewVariable', function( req, res ) {
 		dataMenager.variables.upsert( req.body.viewName, 
 			                        { name: req.body.variableName, type: req.body.variableType },
 		                              function( err, name, type ) {
@@ -36,7 +36,22 @@ exports.mapRouts = function( app ) {
 		});
 	});
 
-	app.get('/admin_panel/view/:name', function( req, res ) {
+	app.get( '/admin_panel/page/:id', function( req, res ) {
+		dataMenager.pages.selectById( req.params.id, {_id: true, name: true, place: true, view: true },
+		                         function( err, pages ) {
+			if ( !err )  {
+
+				if ( pages[0] ) {
+					res.render( 'admin/pageEdit', { title: 'Page Edit', page: pages[0] } );
+				}
+
+			} else {
+				res.send( 'Error!' );
+			}
+		});
+	});
+
+	app.get( '/admin_panel/view/:name', function( req, res ) {
 
 		async.parallel( {
 			view: function getView( callback ) {
@@ -62,7 +77,7 @@ exports.mapRouts = function( app ) {
 			if ( err ) throw err;
 
 			if ( result.view ) {
-				res.render( 'admin/viewEdit', { title: 'View Page', view: result.view, variableTypes: result.variableTypes } );
+				res.render( 'admin/viewEdit', { title: 'View Edit', view: result.view, variableTypes: result.variableTypes } );
 			} else {
 				res.send( 'Error!' );
 			}
@@ -87,7 +102,7 @@ exports.mapRouts = function( app ) {
 
 	app.get( '/selectAllPages', function( req, res ) {
 
-		dataMenager.pages.select({}, {name: true, place: true, path: true}, function( err, documents ) {
+		dataMenager.pages.select({}, { _id: true, name: true, place: true, view: true }, function( err, documents ) {
 
 			if ( !err ) {
 				res.send( documents );
@@ -140,11 +155,11 @@ exports.mapRouts = function( app ) {
 		});
 	});
 
-	app.post( '/insertNewFilePlace', function( req, res ) {
-		dataMenager.pages.upsert( req.body.pageName, req.body.pagePlace, req.body.fileName, function( err, file ){
+	app.post( '/insertNewPage', function( req, res ) {
+		dataMenager.pages.upsert( req.body.pageName, req.body.pagePlace, req.body.pageView, function( err, file ){
 			if ( !err ) {
 				res.send( req.body.fileName );
-				console.log( 'Inserted ' + req.body.fileName + '\n');
+				console.log( 'Inserted ' + req.body.pageName + '\n');
 			} else {
 				res.send( 'Error!' );
 				console.log( err );

@@ -1,15 +1,15 @@
 
-var mongodb = require('mongodb');
+var dbConnector = require('./database_connector');
 
-var server = new mongodb.Server('localhost', 27017, {auto_reconnect: true});
-var db = new mongodb.Db('simplex', server);
-var pages = 'views';
+
+var db = dbConnector.getDB();
+var VIEW_COLLECTION = 'views';
 
 exports.upsert = function ( name, file, callback ) {
 
 	db.open( function( err, db ) {
 		if ( !err ) {
-			db.createCollection( pages, function( err, collection ) {
+			db.createCollection( VIEW_COLLECTION, function( err, collection ) {
 				if ( !err ) {
 					collection.update({ name: name },
 									  { name: name,
@@ -30,10 +30,11 @@ exports.select = function ( query, fields, callback ) {
 
 	db.open( function( err, db ) {
 		if ( !err ) {
-			db.createCollection( pages, function( err, collection ) {
+			db.createCollection( VIEW_COLLECTION, function( err, collection ) {
 				if ( !err ) {
 					collection.find( query, fields ).toArray( function( err, documents ) {
 						callback( err, documents );
+						console.log('view closed');
 						db.close();
 					});
 				}

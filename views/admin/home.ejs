@@ -55,34 +55,34 @@
 		var currentPage;
 
 		$( document ).ready( function() {
-
-/*			selectAllPages( function( documents ) {
-
-				var tableBody = $( '#pageTable' ).find( 'tbody' );
-				for ( var i = 0; i < documents.length; i++ ) {
-					tableBody.append('<tr><td>' + '---' +'</td>' +
-					                  '<td>' + documents[i].name + '</td>' +
-					                  '<td>' + documents[i].place + '</td>' +
-					                  '<td>' + documents[i].path + '</td></tr>'
-					);
-				}
-			});*/
-
-
 			selectAllViews( redrowViewTable );
-
+			selectAllPages( redrowPageTable );
 		});
 
-		function redrowViewTable( documents ) {
+		function redrowPageTable( pages) {
+
+			var tableBody = $( '#pageTable' ).find( 'tbody' );
+			for ( var i = 0; i < pages.length; i++ ) {
+				tableBody.append('<tr><td>' + pages[i].name + '</td>' +
+				                  '<td>' + pages[i].place + '</td>' +
+				                  '<td>' + pages[i].view + '</td>' + 
+				                  '<td>' + '<a href="admin_panel/page/' + pages[i]._id + '">Edit</a></td></tr>'
+				);
+			}
+		}
+
+		function redrowViewTable( views ) {
 
 			var tableBody = $( '#viewTable' ).find( 'tbody' );
 			tableBody.empty();
-			for ( var i = 0; i < documents.length; i++ ) {
-				tableBody.append( '<tr><td>' + documents[i].name + '</td>' +
-				                  '<td>' + documents[i].path + '</td>' + 
-				                  '<td><a href="admin_panel/view/' + documents[i].name + '"">Edit</a></td></tr>'
+			for ( var i = 0; i < views.length; i++ ) {
+				tableBody.append( '<tr><td>' + views[i].name + '</td>' +
+				                  '<td>' + views[i].path + '</td>' + 
+				                  '<td><a href="admin_panel/view/' + views[i].name + '"">Edit</a></td></tr>'
 				);
 			}
+
+			
 		}
 
 		function showPage ( page ) {
@@ -115,13 +115,13 @@
 			$( object ).removeClass( 'invisible' );
 		}
 
-		function saveFilePlace() {
+		function savePage() {
 
 			var pageName = $('#newPageRow').find( 'input[name="page-name"]' )[0].value;
 			var pagePlace = $( '#newPageRow' ).find( 'input[name="page-place"]' )[0].value;
-			var fileName = $( '#newPageRow' ).find( 'input[name="file-name"]' )[0].value;
+			var pageView = $( '#newPageRow' ).find( 'input[name="page-view"]' )[0].value;
 
-			sendNewFilePlace( pageName, pagePlace, fileName, function( res ) {
+			sendNewPage( pageName, pagePlace, pageView, function( res ) {
 				console.log( res );
 			});
 
@@ -172,10 +172,9 @@
 					<table id="pageTable">
 						<thead>
 							<tr>
-								<th>ID</th>
 								<th>Name</th>
 								<th>Place</th>
-								<th>Path</th>
+								<th>View</th>
 								<th>Action</th>
 							</tr>
 						</thead>
@@ -188,11 +187,10 @@
 								<td><button onclick="showNewRow( '#newPageRow', '#showNewPageRow' );">New Page</button></td>
 							</tr>
 							<tr id="newPageRow" class="invisible">
-								<td></td>
 								<td><input name="page-name" type="text" placeholder="Name"/></td>
 								<td><input name="page-place" type="text" placeholder="Place"/></td>
-								<td><input name="file-name" type="text" placeholder="Path"/></td>
-								<td><input type="button" value="Save" onclick="saveFilePlace();"/></td>
+								<td><input name="page-view" type="text" placeholder="View"/></td>
+								<td><input type="button" value="Save" onclick="savePage();"/></td>
 							</tr>
 						</tfoot>
 						<tbody>

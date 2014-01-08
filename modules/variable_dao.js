@@ -1,8 +1,7 @@
+var dbConnector = require('./database_connector');
 
-var mongodb = require('mongodb');
+var db = dbConnector.getDB();
 
-var server = new mongodb.Server('localhost', 27017, {auto_reconnect: true});
-var db = new mongodb.Db('simplex', server);
 var VARIABLES_COLLECTION = 'variables';
 var VIEWS_COLLECTION = 'views';
 var TYPE_COLLECTION = 'types';
