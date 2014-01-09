@@ -37,14 +37,39 @@ exports.mapRouts = function( app ) {
 	});
 
 	app.get( '/admin_panel/page/:id', function( req, res ) {
-		dataMenager.pages.selectById( req.params.id, {_id: true, name: true, place: true, view: true },
+
+		async.waterfall( [
+
+			function getPage( callback ) {
+				dataMenager.pages.selectById( req.params.id, {_id: true, name: true, place: true, view: true },
 		                         function( err, pages ) {
-			if ( !err )  {
+					if ( !err )  {
+						callback( err, pages[0] );
 
-				if ( pages[0] ) {
-					res.render( 'admin/pageEdit', { title: 'Page Edit', page: pages[0] } );
-				}
+					} else {
+						callback( err );
+					}
+				});
 
+			},
+
+			function getViewForPage ( page, callback ) {
+				dataMenager.views.select( { name: page.view }, { name: true, path: true, variables: true }, 
+					function( err, views ) {
+						if (! err )	{
+							page.view = views[0];
+							callback( err, page );
+						} else {
+							callback( err );
+						}
+					});
+			}
+
+		], function render( err, page ) {
+			if ( err ) throw err;
+
+			if ( page ) {
+				res.render( 'admin/pageEdit', { title: 'Page Edit', page: page } );
 			} else {
 				res.send( 'Error!' );
 			}

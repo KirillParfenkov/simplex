@@ -16,11 +16,54 @@
 			display: none;
 		}
 
+		.label {
+			font-weight: bold;
+		}
+
 	</style>
 	<script type="text/javascript">
 	</script>
 
 	<body>
-		<%= 'ID: ' + page._id + ' Name: ' + page.name + ' View: ' + page.view + ' Place:' + page.place%>
+		<table>
+			<tr>
+				<td class="label">Page ID:</td>
+				<td><%= page._id %></td>
+			</tr>
+			<tr>
+				<td class="label">Page Name:</td>
+				<td><%= page.name %></td>
+			</tr>
+			<tr>
+				<td class="label">Page View:</td>
+				<td><%= page.view.name %></td>
+			</tr>
+			<tr>
+				<td class="label">Page Place:</td>
+				<td><%= page.place %></td>
+			</tr>
+		</table>
+
+		<from>
+			<table>
+				<tbody>
+					<% for( var i= 0; i < page.view.variables.length; i++ ) { %>
+						<tr>
+							<td><%= page.view.variables[i].name %></td>
+							<td><% if ( page.view.variables[i].type == 'Boolean' ) { %>
+									<input type="checkbox" name="<%= page.view.variables[i].name %>"/>
+								<% } else if ( page.view.variables[i].type == 'Number' ) { %>
+									<input type="text" name="<%= page.view.variables[i].name %>"/>
+								<% } else if ( page.view.variables[i].type == 'Text' ) { %>
+									<input type="text" name="<%= page.view.variables[i].name %>"/>
+								<% } else if ( page.view.variables[i].type == 'Text Area' ) { %>
+									<textarea rows="5" cols="45" name="<%= page.view.variables[i].name %>"></textarea>
+								<% } %>
+							</td>
+						</tr>
+					<% } %>
+				</tbody>
+			</table>
+		</from>
 	</body>
 </html>
