@@ -2,13 +2,14 @@ var mongodb = require('mongodb');
 var dbConnector = require('./database_connector');
 
 
-var db = dbConnector.getDB();
 var PAGE_COLLECTION = 'pages';
+var SIMPLEX_DB = 'simplex';
 
 exports.upsert = function ( name, place, view, callback ) {
 
-	db.open( function( err, db ) {
+	dbConnector.getMongoclient().open( function( err, mongoclient ) {
 		if ( !err ) {
+			var db = mongoclient.db( SIMPLEX_DB );
 			db.createCollection( PAGE_COLLECTION, function( err, collection ) {
 				if ( !err ) {
 					collection.update({ name: name },
@@ -17,51 +18,53 @@ exports.upsert = function ( name, place, view, callback ) {
 									     view: view },
 									  { upsert: true },
 									  callback);
-					db.close();
+					mongoclient.close();
 				}
 			});
 		} else {
 			callback( err );
-			db.close();
+			mongoclient.close();
 		}
 	});
 }
 
 exports.selectById = function ( id, fields, callback ) {
 
-	db.open( function( err, db ) {
+	dbConnector.getMongoclient().open( function( err, mongoclient ) {
 		if ( !err ) {
+			var db = mongoclient.db( SIMPLEX_DB );
 			db.createCollection( PAGE_COLLECTION, function( err, collection ) {
 				if ( !err ) {
 					collection.find( { _id: mongodb.ObjectID( id ) }, fields ).toArray( function( err, documents ) {
 						callback( err, documents );
-						db.close();
+						mongoclient.close();
 					});
 				}
 			});
 		} else {
 			callback( err );
-			db.close();
+			mongoclient.close();
 		}
 	});	
 }
 
 exports.select = function ( query, fields, callback ) {
 
-	db.open( function( err, db ) {
+	dbConnector.getMongoclient().open( function( err, mongoclient ) {
 		if ( !err ) {
+			var db = mongoclient.db( SIMPLEX_DB );
 			db.createCollection( PAGE_COLLECTION, function( err, collection ) {
 				if ( !err ) {
 					collection.find( query, fields ).toArray( function( err, documents ) {
 						callback( err, documents );
 						console.log('page closed');
-						db.close();
+						mongoclient.close();
 					});
 				}
 			});
 		} else {
 			callback( err );
-			db.close();
+			mongoclient.close();
 		}
 	});
 }

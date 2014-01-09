@@ -1,28 +1,28 @@
 var dbConnector = require('./database_connector');
 
-var db = dbConnector.getDB();
-
 var VARIABLES_COLLECTION = 'variables';
 var VIEWS_COLLECTION = 'views';
 var TYPE_COLLECTION = 'types';
+var SIMPLEX_DB = 'simplex';
 
 exports.set = function ( variable, callback ) {
-	db.open( function( err, db ) {
+	dbConnector.getMongoclient().open( function( err, mongoclient ) {
 		if ( !err ) {
+			var db = mongoclient.db( SIMPLEX_DB );
 			db.createCollection( VARIABLES_COLLECTION, function( err, collection ) {
 				if ( !err ) {
 					collection.insert( VARIABLES_COLLECTION, { safe: true }, function( err, result ) {
 						if ( err ) {
 							callback(err);
-							db.close();
+							mongoclient.close();
 						} else {
 							callback(err, result);
-							db.close();
+							mongoclient.close();
 						}
 					});
 				} else {
 					callback(err);
-					db.close();
+					mongoclient.close();
 				}
 			});
 		}
@@ -42,17 +42,18 @@ exports.insert = function ( list ) {
 }
 
 exports.selectAll = function ( callback ) {
-	db.open( function( err, db ) {
+	dbConnector.getMongoclient().open( function( err, mongoclient ) {
 		if ( !err ) {
+			var db = mongoclient.db( SIMPLEX_DB );
 			db.createCollection( VARIABLES_COLLECTION, function( err, collection ) {
 				if ( !err ) {
 					collection.find().toArray(function ( err, docs ) {
 						callback(err, docs);
-						db.close();
+						mongoclient.close();
 					});
 				} else {
 					callback(err);
-					db.close();
+					mongoclient.close();
 				}
 			});
 		}
@@ -61,92 +62,97 @@ exports.selectAll = function ( callback ) {
 
 exports.upsert = function ( viewName, name, type, callback ) {
 
-	db.open( function( err, db ) {
+	dbConnector.getMongoclient().open( function( err, mongoclient ) {
 		if ( !err ) {
+			var db = mongoclient.db( SIMPLEX_DB );
 			db.createCollection( VARIABLES_COLLECTION, function( err, collection ) {
 				if ( !err ) {
 					collection.update({ name: name, viewName: viewName },
 									  { viewName: viewName, name: name, type: type },
 									  { upsert: true },
 									  callback);
-					db.close();
+					mongoclient.close();
 				}
 			});
 		} else {
 			callback( err );
-			db.close();
+			mongoclient.close();
 		}
 	});
 }
 
 exports.select = function ( query, fields, callback ) {
 
-	db.open( function( err, db ) {
+	dbConnector.getMongoclient().open( function( err, mongoclient ) {
 		if ( !err ) {
+			var db = mongoclient.db( SIMPLEX_DB );
 			db.createCollection( VARIABLES_COLLECTION, function( err, collection ) {
 				if ( !err ) {
 					collection.find( query, fields ).toArray( function( err, documents ) {
 						callback( err, documents );
-						db.close();
+						mongoclient.close();
 					});
 				}
 			});
 		} else {
 			callback( err );
-			db.close();
+			mongoclient.close();
 		}
 	});
 }
 
 exports.pushVariable = function ( viewName, variable, callback ) {
 
-	db.open( function( err, db ) {
+	dbConnector.getMongoclient().open( function( err, mongoclient ) {
 		if ( !err ) {
+			var db = mongoclient.db( SIMPLEX_DB );
 			db.createCollection( VIEWS_COLLECTION, function( err, collection ) {
 				if ( !err ) {
 					collection.update({ name: viewName }, { $push: { variables: variable }}, callback);
-					db.close();
+					mongoclient.close();
 				}
 			});
 		} else {
 			callback( err );
-			db.close();
+			mongoclient.close();
 		}
 	});
 }
 
 exports.pullVariable = function ( viewName, matchVar, callback ) {
 
-	db.open( function( err, db ) {
+	dbConnector.getMongoclient().open( function( err, mongoclient ) {
 		if ( !err ) {
+			var db = mongoclient.db( SIMPLEX_DB );
 			db.createCollection( VIEWS_COLLECTION, function( err, collection ) {
 				if ( !err ) {
 					collection.update({ name: viewName }, { $pull: { variables: matchVar }}, callback);
-					db.close();
+					mongoclient.close();
 				}
 			});
 		} else {
 			callback( err );
-			db.close();
+			mongoclient.close();
 		}
 	});
 }
 
 exports.getTyles = function ( callback ) {
 
-	db.open( function( err, db) {
+	dbConnector.getMongoclient().open( function( err, mongoclient) {
 		if ( !err ) {
+			var db = mongoclient.db( SIMPLEX_DB );
 			db.createCollection( TYPE_COLLECTION, function( err, collection) {
 				if( !err ){
 					collection.find({}, { name: true }).toArray( function( err, types ) {
 						callback( err, types );
-						db.close();
+						mongoclient.close();
 					});
 				}
 			});
 		} else {
 			callback( err );
-			db.close();
+			mongoclient.close();
 		}
 	});
 }
