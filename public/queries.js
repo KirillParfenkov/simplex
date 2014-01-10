@@ -1,13 +1,11 @@
 var host = window.location.host;
 
 function selectAllPages( callback ) {
-	
 	$.get('http://' + host + '/selectAllPages', callback);
 
 }
 
 function selectAllViews( callback ) {
-	
 	$.get('http://' + host + '/selectAllViews', callback);
 
 }

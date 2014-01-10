@@ -22,6 +22,12 @@ exports.update = function( app ) {
 
 exports.mapRouts = function( app ) {
 
+	app.post( '/savePage', function( req, res ) {
+		req.body.forEach( function( param) {
+			console.log( param );
+		});
+	});
+
 	app.post( '/insertNewVariable', function( req, res ) {
 		dataMenager.variables.upsert( req.body.viewName, 
 			                        { name: req.body.variableName, type: req.body.variableType },
@@ -75,6 +81,7 @@ exports.mapRouts = function( app ) {
 			}
 		});
 	});
+
 
 	app.get( '/admin_panel/view/:name', function( req, res ) {
 
