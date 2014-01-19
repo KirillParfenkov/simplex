@@ -5,6 +5,24 @@ var dbConnector = require('./database_connector');
 var PAGE_COLLECTION = 'pages';
 var SIMPLEX_DB = 'simplex';
 
+exports.setVariables = function ( pageId, variables, callback ) {
+
+	dbConnector.getMongoclient().open( function( err, mongoclient ) {
+		if ( !err ) {
+			var db = mongoclient.db( SIMPLEX_DB );
+			db.createCollection( PAGE_COLLECTION, function( err, collection ) {
+				if ( !err ) {
+					collection.update({ _id: mongodb.ObjectID( pageId ) }, { $set: {variables: variables} }, callback);
+					mongoclient.close();
+				}
+			});
+		} else {
+			callback( err );
+			mongoclient.close();
+		}
+	});
+}
+
 exports.upsert = function ( name, place, view, callback ) {
 
 	dbConnector.getMongoclient().open( function( err, mongoclient ) {

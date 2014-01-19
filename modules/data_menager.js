@@ -18,6 +18,10 @@ exports.varibles = {
 }
 
 exports.pages = {
+
+	setVariables: function( pageId, variables, callback ) {
+		pageDao.setVariables( pageId, variables, callback );
+	},
 	
 	upsert: function( name, place, view, callback ) {
 		pageDao.upsert( name, place, view, callback );

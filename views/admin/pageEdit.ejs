@@ -55,20 +55,20 @@
 			</tr>
 		</table>
 
-		<from action= "http://localhost:3000/savePage" method="POST">
+		<form action= "http://localhost:3000/savePageVariables/<%= page._id %>" method="POST">
 			<table>
 				<tbody>
 					<% for( var i= 0; i < page.view.variables.length; i++ ) { %>
 						<tr>
 							<td><%= page.view.variables[i].name %></td>
 							<td><% if ( page.view.variables[i].type == 'Boolean' ) { %>
-									<input type="checkbox" name="<%= page.view.variables[i].name %>"/>
+									<input type="checkbox" name="<%= page.view.variables[i].name %>" <% if ( page.variables[i].value == 'on' ) {%> checked="checked" <% } %> />
 								<% } else if ( page.view.variables[i].type == 'Number' ) { %>
-									<input type="text" name="<%= page.view.variables[i].name %>"/>
+									<input type="text" name="<%= page.view.variables[i].name %>" value="<%=  page.variables[i].value %>"/>
 								<% } else if ( page.view.variables[i].type == 'Text' ) { %>
-									<input type="text" name="<%= page.view.variables[i].name %>"/>
+									<input type="text" name="<%= page.view.variables[i].name %>" value="<%=  page.variables[i].value %>"/>
 								<% } else if ( page.view.variables[i].type == 'Text Area' ) { %>
-									<textarea rows="5" cols="45" name="<%= page.view.variables[i].name %>"></textarea>
+									<textarea rows="5" cols="45" name="<%= page.view.variables[i].name %>"><%=  page.variables[i].value %></textarea>
 								<% } %>
 							</td>
 						</tr>
@@ -76,6 +76,6 @@
 				</tbody>
 			</table>
 			<input type="submit" value="Save" id="pageSaveButton"/>
-		</from>
+		</form>
 	</body>
 </html>

@@ -47,7 +47,7 @@ exports.mapRouts = function( app ) {
 		async.waterfall( [
 
 			function getPage( callback ) {
-				dataMenager.pages.selectById( req.params.id, {_id: true, name: true, place: true, view: true },
+				dataMenager.pages.selectById( req.params.id, {_id: true, name: true, place: true, view: true, variables: true },
 		                         function( err, pages ) {
 					if ( !err )  {
 						callback( err, pages[0] );
@@ -81,6 +81,56 @@ exports.mapRouts = function( app ) {
 			}
 		});
 	});
+
+	app.post( '/savePageVariables/:id', function( req, res ) {
+
+			async.waterfall( [
+
+			function getPage( callback ) {
+				dataMenager.pages.selectById( req.params.id, {_id: true, name: true, place: true, view: true },
+		                         function( err, pages ) {
+					if ( !err )  {
+						callback( err, pages[0] );
+
+					} else {
+						callback( err );
+					}
+				});
+
+			},
+
+			function getViewForPage ( page, callback ) {
+				dataMenager.views.select( { name: page.view }, { name: true, path: true, variables: true }, 
+					function( err, views ) {
+						if (! err )	{
+							page.view = views[0];
+							callback( err, page );
+						} else {
+							callback( err );
+						}
+					});
+			}
+
+		], function render( err, page ) {
+			if ( err ) throw err;
+
+			var variables = new Array();
+			var viewVars = page.view.variables;
+
+			for( var i = 0; i <  viewVars.length ; i++) {
+				variables.push( { name: viewVars[i].name, value: req.body[viewVars[i].name]});
+			}
+
+			if ( page ) {
+				dataMenager.pages.setVariables( req.params.id, variables, function() {
+					res.redirect('/admin_panel');
+					console.log(  );
+				});
+			} else {
+				res.send( 'Error!' );
+			}
+		});
+	}); 
 
 
 	app.get( '/admin_panel/view/:name', function( req, res ) {
