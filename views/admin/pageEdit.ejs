@@ -29,8 +29,6 @@
 				var pageVariables;
 			}); */
 
-
-
 		});
 
 	</script>
@@ -47,14 +45,14 @@
 			</tr>
 			<tr>
 				<td class="label">Page View:</td>
-				<td><%= page.view.name %></td>
+				<td><% if ( page.view ) { %> <%= page.view.name %> <% }%></td>
 			</tr>
 			<tr>
 				<td class="label">Page Place:</td>
 				<td><%= page.place %></td>
 			</tr>
 		</table>
-
+		<% if ( page.view ) { %>
 		<form action= "http://localhost:3000/savePageVariables/<%= page._id %>" method="POST">
 			<table>
 				<tbody>
@@ -62,13 +60,13 @@
 						<tr>
 							<td><%= page.view.variables[i].name %></td>
 							<td><% if ( page.view.variables[i].type == 'Boolean' ) { %>
-									<input type="checkbox" name="<%= page.view.variables[i].name %>" <% if ( page.variables[i].value == 'on' ) {%> checked="checked" <% } %> />
+									<input type="checkbox" name="<%= page.view.variables[i].name %>" <% if ( page.variables && page.variables[i].value == 'on' ) {%> checked="checked" <% } %> />
 								<% } else if ( page.view.variables[i].type == 'Number' ) { %>
-									<input type="text" name="<%= page.view.variables[i].name %>" value="<%=  page.variables[i].value %>"/>
+									<input type="text" name="<%= page.view.variables[i].name %>" <% if ( page.variables ) { %>value="<%=  page.variables[i].value %>" <% } %> />
 								<% } else if ( page.view.variables[i].type == 'Text' ) { %>
-									<input type="text" name="<%= page.view.variables[i].name %>" value="<%=  page.variables[i].value %>"/>
+									<input type="text" name="<%= page.view.variables[i].name %>" <% if ( page.variables ) { %>value="<%=  page.variables[i].value %>" <% } %> />
 								<% } else if ( page.view.variables[i].type == 'Text Area' ) { %>
-									<textarea rows="5" cols="45" name="<%= page.view.variables[i].name %>"><%=  page.variables[i].value %></textarea>
+									<textarea rows="5" cols="45" name="<%= page.view.variables[i].name %>"><% if ( page.variables ) { %><%=  page.variables[i].value %><% } %></textarea>
 								<% } %>
 							</td>
 						</tr>
@@ -77,5 +75,6 @@
 			</table>
 			<input type="submit" value="Save" id="pageSaveButton"/>
 		</form>
+		<% } %>
 	</body>
 </html>
